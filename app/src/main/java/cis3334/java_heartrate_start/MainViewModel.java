@@ -24,7 +24,6 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Heartrate>> getAllHeartrates () {
-        heartrateList = heartrateRepository.getAll();
         return heartrateList;
     }
 }

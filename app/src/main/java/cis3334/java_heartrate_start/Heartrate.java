@@ -30,6 +30,11 @@ public class Heartrate {
     public Heartrate(Integer pulse, Integer age) {
         this.pulse = pulse;
         this.age = age;
+
+        // Ensure they're not null, provide defaults if needed
+        if (this.pulse == null) this.pulse = 0;
+        if (this.age == null) this.age = 0;
+
         calcHeartRange();
     }
 
@@ -39,32 +44,42 @@ public class Heartrate {
      *  @return range -- the range index (usually 0 - 5) used for the index into the arrays above
      */
     public Integer calcHeartRange() {
-        maxHeartRate = 220.0 - age;        // from  http://www.cdc.gov/physicalactivity/basics/measuring/heartrate.htm
+        // Add null checks
+        if (age == null || pulse == null) {
+            range = 0; // Default to first range
+            return range;
+        }
+
+        maxHeartRate = 220.0 - age;
         percent = pulse / maxHeartRate;
-        for (int i=0; i<rangeNames.length; i++) {
-            if ( percent < rangeBounds[i] ) {
-                // heartrate is in this range
+
+        for (int i = 0; i < rangeNames.length; i++) {
+            if (percent < rangeBounds[i]) {
                 range = i;
-                return range;          // break out of this loop
+                return range;
             }
         }
-        return rangeNames.length-1;                      // this should never happen
+        return rangeNames.length - 1;
     }
 
     /**
      * @return the name for this range such as Aerobic
      */
     public String getRangeName() {
-        calcHeartRange();
-        return rangeNames[range];
+        if (range == null) {
+            calcHeartRange();
+        }
+        return rangeNames[range != null ? range : 0];
     }
 
     /**
      * @return the longer description for this range such as "Fitness and fat burning"
      */
     public String getRangeDescrtiption() {
-        calcHeartRange();
-        return rangeDescriptions[range];
+        if (range == null) {
+            calcHeartRange();
+        }
+        return rangeDescriptions[range != null ? range : 0];
     }
 
     /**
